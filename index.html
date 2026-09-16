@@ -251,7 +251,6 @@
     <a href="#content">Content</a>
     <a href="#onpage">On-Page</a>
     <a href="#schema">Schema</a>
-    <a href="#performance">Performance</a>
     <a href="#ai">AI Readiness</a>
     <a href="#images">Images</a>
     <a href="#screenshots">Screenshots</a>
@@ -291,7 +290,6 @@
       <div class="cat-row"><div class="catname">Content Quality<span class="weight">weight 23%</span></div><div class="bartrack"><div class="barfill" style="width:45%; background:var(--critical);"></div></div><div class="barnum">45</div></div>
       <div class="cat-row"><div class="catname">On-Page SEO<span class="weight">weight 20%</span></div><div class="bartrack"><div class="barfill" style="width:35%; background:var(--critical);"></div></div><div class="barnum">35</div></div>
       <div class="cat-row"><div class="catname">Schema<span class="weight">weight 10%</span></div><div class="bartrack"><div class="barfill" style="width:50%; background:var(--warning);"></div></div><div class="barnum">50</div></div>
-      <div class="cat-row"><div class="catname">Performance<span class="weight">weight 10%</span></div><div class="bartrack"><div class="barfill" style="width:55%; background:var(--warning);"></div></div><div class="barnum">55</div></div>
       <div class="cat-row"><div class="catname">AI Search Readiness<span class="weight">weight 10%</span></div><div class="bartrack"><div class="barfill" style="width:40%; background:var(--critical);"></div></div><div class="barnum">40</div></div>
       <div class="cat-row"><div class="catname">Images<span class="weight">weight 5%</span></div><div class="bartrack"><div class="barfill" style="width:55%; background:var(--warning);"></div></div><div class="barnum">55</div></div>
     </div>
@@ -431,32 +429,6 @@ Server: hcdn
     </div>
   </section>
 
-  <section id="performance">
-    <div class="section-head"><h2>Performance (Core Web Vitals)</h2><span class="score-tag mono">55 / 100</span></div>
-    <div class="works-box">
-      <span class="label">What works</span>
-      <ul>
-        <li>Fast server response: TTFB ~337ms on the homepage</li>
-        <li>Brotli compression enabled at the CDN edge</li>
-        <li>93% of homepage images (63/68) already use modern WebP/AVIF formats</li>
-      </ul>
-    </div>
-
-    <div class="finding">
-      <div class="finding-head"><span class="sev sev-info">Info</span><h3>PageSpeed Insights / CrUX field data unavailable this run</h3></div>
-      <p>The shared PSI API quota returned a rate-limit error for both mobile and desktop strategies, so lab Lighthouse scores and CrUX field metrics (LCP / INP / CLS) could not be captured in this session.</p>
-      <div class="evidence"><span class="ev-label">PageSpeed Insights API response</span><code>"error": "PSI rate limit exceeded (240 QPM / 25,000 QPD). Wait and retry."</code></div>
-      <div class="fix"><b>Fix →</b> Re-run PageSpeed Insights with a dedicated API key, or check pagespeed.web.dev directly, for real LCP/INP/CLS numbers.</div>
-    </div>
-
-    <div class="finding">
-      <div class="finding-head"><span class="sev sev-medium">Medium</span><h3>No explicit image dimensions; minimal lazy loading</h3></div>
-      <p>None of the 68 homepage images have explicit width/height attributes, and only 3 use native lazy loading — the remaining 65 load eagerly regardless of scroll position, including a full row of below-the-fold client-logo images.</p>
-      <div class="evidence"><span class="ev-label">homepage image audit</span><code>68 images total · 0 with width/height · 3 with loading="lazy" · 65 eager</code></div>
-      <div class="fix"><b>Fix →</b> Add explicit width/height (or aspect-ratio) to prevent layout shift, and loading="lazy" on anything below the initial viewport.</div>
-    </div>
-  </section>
-
   <section id="ai">
     <div class="section-head"><h2>AI Search Readiness</h2><span class="score-tag mono">40 / 100</span></div>
     <div class="works-box">
@@ -505,11 +477,11 @@ Seagate case study: 13 / 21  (62%)</code></div>
     <p class="muted" style="margin-bottom:16px;">No visual defects found in this pass — the mobile above-the-fold view is clean: clear headline, visible CTA, and an accessible EN/AR language switcher.</p>
     <div class="shot-grid">
       <figure class="shot">
-        <img src="screenshots/desktop.png" alt="SKLD homepage, desktop viewport" loading="lazy">
+        <img src="desktop.png" alt="SKLD homepage, desktop viewport" loading="lazy">
         <figcaption>Desktop — homepage</figcaption>
       </figure>
       <figure class="shot mobile">
-        <img src="screenshots/mobile.png" alt="SKLD homepage, mobile viewport" loading="lazy">
+        <img src="mobile.png" alt="SKLD homepage, mobile viewport" loading="lazy">
         <figcaption>Mobile — homepage</figcaption>
       </figure>
     </div>
@@ -550,7 +522,6 @@ Seagate case study: 13 / 21  (62%)</code></div>
       <div class="phase">
         <div><div class="phase-title">Phase 4 — Monitoring</div><div class="phase-time">Ongoing</div></div>
         <ul>
-          <li><input type="checkbox" id="p4-1"><span>Re-run PageSpeed Insights for real LCP/INP/CLS</span></li>
           <li><input type="checkbox" id="p4-2"><span>Set up Search Console to catch soft-404s / duplicates</span></li>
           <li><input type="checkbox" id="p4-3"><span>Re-check unique titles/descriptions after each template edit</span></li>
         </ul>
