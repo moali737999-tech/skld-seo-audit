@@ -1,0 +1,586 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SKLD SEO Audit</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    color-scheme: light;
+    --bg:#F6F4EE;
+    --surface:#FFFFFF;
+    --surface-2:#FBFAF5;
+    --border:#E4E0D3;
+    --text:#17181C;
+    --text-muted:#5B5F66;
+    --text-faint:#898781;
+    --accent:#96700A;
+    --accent-soft:#F1E4BE;
+    --good:#0ca30c;      --good-soft:rgba(12,163,12,0.10);
+    --warning:#c98500;   --warning-soft:rgba(250,178,25,0.16);
+    --serious:#c35a34;   --serious-soft:rgba(236,131,90,0.16);
+    --critical:#d03b3b;  --critical-soft:rgba(208,59,59,0.10);
+    --info:#6b6f76;      --info-soft:rgba(137,135,129,0.14);
+    --mono-bg:#101114;
+    --mono-text:#D8DEE9;
+    --mono-border:#2A2C31;
+    --mono-accent:#F4D328;
+    --shadow: 0 1px 2px rgba(20,20,15,0.04), 0 8px 24px -12px rgba(20,20,15,0.12);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      color-scheme: dark;
+      --bg:#0B0B0D;
+      --surface:#0F1013;
+      --surface-2:#17181B;
+      --border:#2C2D31;
+      --text:#F2F1EA;
+      --text-muted:#A7ACB5;
+      --text-faint:#7D828B;
+      --accent:#F4D328;
+      --accent-soft:rgba(244,211,40,0.14);
+      --good:#3FCB6B;      --good-soft:rgba(63,203,107,0.14);
+      --warning:#fab219;   --warning-soft:rgba(250,178,25,0.16);
+      --serious:#ec835a;   --serious-soft:rgba(236,131,90,0.16);
+      --critical:#ff6b6b;  --critical-soft:rgba(255,107,107,0.14);
+      --info:#9AA4B2;      --info-soft:rgba(154,164,178,0.14);
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 12px 28px -12px rgba(0,0,0,0.55);
+    }
+  }
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --bg:#0B0B0D;
+    --surface:#0F1013;
+    --surface-2:#17181B;
+    --border:#2C2D31;
+    --text:#F2F1EA;
+    --text-muted:#A7ACB5;
+    --text-faint:#7D828B;
+    --accent:#F4D328;
+    --accent-soft:rgba(244,211,40,0.14);
+    --good:#3FCB6B;      --good-soft:rgba(63,203,107,0.14);
+    --warning:#fab219;   --warning-soft:rgba(250,178,25,0.16);
+    --serious:#ec835a;   --serious-soft:rgba(236,131,90,0.16);
+    --critical:#ff6b6b;  --critical-soft:rgba(255,107,107,0.14);
+    --info:#9AA4B2;      --info-soft:rgba(154,164,178,0.14);
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 12px 28px -12px rgba(0,0,0,0.55);
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:"IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    padding-inline:20px;
+    padding-block: 28px 48px;
+  }
+  .wrap{max-width:880px; margin:0 auto;}
+  h1,h2,h3{font-family:"Space Grotesk", "Segoe UI", sans-serif; text-wrap:balance; letter-spacing:-0.01em; margin:0;}
+  h1{font-size:clamp(28px,5vw,42px); line-height:1.08;}
+  h2{font-size:clamp(20px,3vw,26px); line-height:1.2;}
+  h3{font-size:17px; line-height:1.3;}
+  p{line-height:1.6; color:var(--text); margin:0;}
+  .muted{color:var(--text-muted);}
+  .faint{color:var(--text-faint);}
+  a{color:var(--accent);}
+  code, .mono{font-family:"IBM Plex Mono", ui-monospace, Consolas, monospace;}
+  img{max-width:100%;}
+
+  /* ---------- header ---------- */
+  header.hero{
+    display:flex; flex-direction:column; gap:18px;
+    padding-block:8px 28px;
+    border-bottom:1px solid var(--border);
+    margin-bottom:28px;
+  }
+  .eyebrow{
+    font-family:"IBM Plex Mono", monospace; font-size:12px; letter-spacing:0.08em; text-transform:uppercase;
+    color:var(--text-faint); display:flex; gap:10px; align-items:center; flex-wrap:wrap;
+  }
+  .eyebrow .dot{width:5px;height:5px;border-radius:50%;background:var(--text-faint);}
+  .hero-grid{display:flex; gap:28px; align-items:center; flex-wrap:wrap;}
+  .hero-copy{flex:1 1 380px; display:flex; flex-direction:column; gap:10px;}
+  .hero-copy p{max-width:56ch;}
+  .meta-chips{display:flex; gap:8px; flex-wrap:wrap; margin-top:4px;}
+  .chip{
+    font-size:12.5px; padding:5px 10px; border-radius:999px; border:1px solid var(--border);
+    background:var(--surface-2); color:var(--text-muted); font-family:"IBM Plex Mono",monospace;
+  }
+
+  /* ---------- gauge ---------- */
+  .gauge-card{
+    flex:0 0 auto; display:flex; flex-direction:column; align-items:center; gap:2px;
+    background:var(--surface); border:1px solid var(--border); border-radius:16px;
+    padding:18px 26px; box-shadow:var(--shadow);
+  }
+  .gauge-label{font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:0.08em; text-transform:uppercase; color:var(--text-faint);}
+  .gauge-num{font-family:"Space Grotesk",sans-serif; font-weight:700; font-size:15px;}
+
+  /* ---------- toc ---------- */
+  nav.toc{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:32px;}
+  nav.toc a{
+    text-decoration:none; font-size:13px; color:var(--text-muted); background:var(--surface);
+    border:1px solid var(--border); padding:6px 12px; border-radius:999px; transition:color .15s, border-color .15s;
+  }
+  nav.toc a:hover{color:var(--text); border-color:var(--accent);}
+
+  section{margin-bottom:44px; scroll-margin-top:16px;}
+  .section-head{display:flex; align-items:baseline; justify-content:space-between; gap:12px; margin-bottom:16px; flex-wrap:wrap;}
+  .section-head .score-tag{font-family:"IBM Plex Mono",monospace; font-size:13px; color:var(--text-muted);}
+
+  /* ---------- summary two-col ---------- */
+  .summary-grid{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+  @media (max-width:640px){ .summary-grid{grid-template-columns:1fr;} }
+  .summary-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:18px 20px;
+    display:flex; flex-direction:column; gap:12px; box-shadow:var(--shadow);
+  }
+  .summary-card h3{display:flex; align-items:center; gap:8px;}
+  .summary-card ol, .summary-card ul{margin:0; padding-left:20px; display:flex; flex-direction:column; gap:8px; color:var(--text);}
+  .summary-card li{line-height:1.45; font-size:14.5px;}
+  .summary-card.critical{border-top:3px solid var(--critical);}
+  .summary-card.wins{border-top:3px solid var(--good);}
+
+  /* ---------- category scorecards ---------- */
+  .cat-grid{display:flex; flex-direction:column; gap:10px;}
+  .cat-row{
+    display:grid; grid-template-columns:170px 1fr 46px; align-items:center; gap:14px;
+    background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:12px 16px;
+  }
+  @media (max-width:560px){ .cat-row{grid-template-columns:1fr; row-gap:8px;} .cat-row .barnum{justify-self:start;} }
+  .cat-row .catname{font-size:14.5px; font-weight:600;}
+  .cat-row .weight{font-family:"IBM Plex Mono",monospace; font-size:11px; color:var(--text-faint); font-weight:400; display:block;}
+  .bartrack{height:10px; border-radius:999px; background:var(--surface-2); border:1px solid var(--border); overflow:hidden;}
+  .barfill{height:100%; border-radius:999px;}
+  .barnum{font-family:"IBM Plex Mono",monospace; font-weight:600; font-size:14px; text-align:right; font-variant-numeric:tabular-nums;}
+
+  /* ---------- findings ---------- */
+  .works-box{
+    background:var(--good-soft); border:1px solid var(--border); border-left:3px solid var(--good);
+    border-radius:10px; padding:14px 16px; margin-bottom:16px;
+  }
+  .works-box .label{font-family:"IBM Plex Mono",monospace; font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:var(--good); font-weight:600; margin-bottom:8px; display:block;}
+  .works-box ul{margin:0; padding-left:18px; display:flex; flex-direction:column; gap:6px;}
+  .works-box li{font-size:14px; line-height:1.5;}
+
+  .finding{
+    background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:18px 20px; margin-bottom:14px; box-shadow:var(--shadow);
+  }
+  .finding-head{display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:10px;}
+  .sev{
+    font-family:"IBM Plex Mono",monospace; font-size:11px; font-weight:600; letter-spacing:.04em; text-transform:uppercase;
+    padding:3px 9px; border-radius:6px; white-space:nowrap;
+  }
+  .sev-critical{background:var(--critical-soft); color:var(--critical);}
+  .sev-high{background:var(--serious-soft); color:var(--serious);}
+  .sev-medium{background:var(--warning-soft); color:var(--warning);}
+  .sev-low{background:var(--good-soft); color:var(--good);}
+  .sev-info{background:var(--info-soft); color:var(--info);}
+  .finding h3{flex:1 1 auto;}
+  .finding p{font-size:14.5px; margin-bottom:10px;}
+  .finding p:last-of-type{margin-bottom:0;}
+  .evidence{
+    background:var(--mono-bg); color:var(--mono-text); border:1px solid var(--mono-border);
+    border-radius:8px; padding:12px 14px; margin:10px 0; overflow-x:auto;
+  }
+  .evidence .ev-label{font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--mono-accent); display:block; margin-bottom:6px;}
+  .evidence code{font-size:12.5px; line-height:1.6; white-space:pre-wrap; word-break:break-word; color:var(--mono-text);}
+  .fix{font-size:14.5px; padding-top:10px; border-top:1px dashed var(--border); margin-top:12px;}
+  .fix b{color:var(--accent); font-family:"IBM Plex Mono",monospace; font-size:12px; letter-spacing:.04em; text-transform:uppercase;}
+
+  /* ---------- screenshots ---------- */
+  .shot-grid{display:flex; gap:20px; align-items:flex-end; flex-wrap:wrap;}
+  .shot{flex:1 1 240px; display:flex; flex-direction:column; gap:8px;}
+  .shot img{width:100%; border-radius:10px; border:1px solid var(--border); display:block; box-shadow:var(--shadow);}
+  .shot.mobile{flex:0 1 220px;}
+  .shot figcaption{font-size:13px; color:var(--text-muted); text-align:center;}
+
+  /* ---------- action plan ---------- */
+  .phase-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:14px;}
+  @media (max-width:820px){ .phase-grid{grid-template-columns:1fr 1fr;} }
+  @media (max-width:560px){ .phase-grid{grid-template-columns:1fr;} }
+  .phase{
+    background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:14px 16px;
+    display:flex; flex-direction:column; gap:10px;
+  }
+  .phase-title{font-size:13px; font-weight:600;}
+  .phase-time{font-family:"IBM Plex Mono",monospace; font-size:11px; color:var(--text-faint);}
+  .phase ul{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:8px;}
+  .phase li{display:flex; gap:8px; align-items:flex-start; font-size:13.5px; line-height:1.4;}
+  .phase input[type="checkbox"]{margin-top:3px; accent-color:var(--accent); width:15px; height:15px; flex:none; cursor:pointer;}
+  .phase li.checked span{color:var(--text-faint); text-decoration:line-through;}
+
+  footer{margin-top:52px; padding-top:20px; border-top:1px solid var(--border); font-size:12.5px; color:var(--text-faint); display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <div class="eyebrow">SEO AUDIT <span class="dot"></span> skldeg.com <span class="dot"></span> 16 Sep 2026</div>
+    <div class="hero-grid">
+      <div class="hero-copy">
+        <h1>SKLD is telling every crawler the same story.</h1>
+        <p class="muted">A rendered-vs-raw crawl of all 40 sitemap URLs found that nearly every core page shares one identical title and description, and blog posts are shipping a literal <code>"undefined"</code> instead of one. Full findings and a prioritized fix list below.</p>
+        <div class="meta-chips">
+          <span class="chip">Digital marketing agency</span>
+          <span class="chip">Bilingual EN / AR</span>
+          <span class="chip">40 URLs · 12 pages sampled</span>
+        </div>
+      </div>
+      <div class="gauge-card">
+        <svg width="176" height="106" viewBox="0 0 200 120">
+          <path d="M20,100 A80,80 0 0 1 180,100" fill="none" stroke="var(--border)" stroke-width="16" stroke-linecap="round"/>
+          <path d="M20,100 A80,80 0 0 1 180,100" fill="none" stroke="var(--critical)" stroke-width="16" stroke-linecap="round"
+                stroke-dasharray="115.6 400"/>
+          <text x="100" y="92" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-weight="700" font-size="40" fill="var(--text)">46</text>
+        </svg>
+        <span class="gauge-label">Health score / 100</span>
+      </div>
+    </div>
+  </header>
+
+  <nav class="toc">
+    <a href="#summary">Summary</a>
+    <a href="#scores">Category scores</a>
+    <a href="#technical">Technical</a>
+    <a href="#content">Content</a>
+    <a href="#onpage">On-Page</a>
+    <a href="#schema">Schema</a>
+    <a href="#performance">Performance</a>
+    <a href="#ai">AI Readiness</a>
+    <a href="#images">Images</a>
+    <a href="#screenshots">Screenshots</a>
+    <a href="#plan">Action Plan</a>
+  </nav>
+
+  <section id="summary">
+    <div class="section-head"><h2>Executive summary</h2></div>
+    <div class="summary-grid">
+      <div class="summary-card critical">
+        <h3><span class="sev sev-critical">Critical</span> Top 5 issues</h3>
+        <ol>
+          <li>Meta description renders as the text <code>"undefined"</code> on every blog article checked (4/4)</li>
+          <li>Home, About, Services, Contact, Ecommerce, Blog index and every Case Study share one identical title + description</li>
+          <li>All page metadata is written by JavaScript — the raw HTML for any URL is a generic 2.6KB shell</li>
+          <li>Non-existent URLs return HTTP 200 and quietly render the homepage instead of a 404</li>
+          <li>No security headers beyond a bare Content-Security-Policy directive</li>
+        </ol>
+      </div>
+      <div class="summary-card wins">
+        <h3><span class="sev sev-low">Quick wins</span> Fix first</h3>
+        <ul>
+          <li>Patch the template bug feeding <code>"undefined"</code> into blog post meta tags</li>
+          <li>Write a unique title + description for each of the 7 core page templates</li>
+          <li>Add <code>loading="lazy"</code> + width/height to the 65 eager-loaded homepage images</li>
+          <li>Return a real HTTP 404 for unmatched routes</li>
+          <li>Add HSTS, X-Content-Type-Options, X-Frame-Options and Referrer-Policy headers</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="scores">
+    <div class="section-head"><h2>Category scores</h2><span class="score-tag">weighted to 46/100 overall</span></div>
+    <div class="cat-grid">
+      <div class="cat-row"><div class="catname">Technical SEO<span class="weight">weight 22%</span></div><div class="bartrack"><div class="barfill" style="width:50%; background:var(--warning);"></div></div><div class="barnum">50</div></div>
+      <div class="cat-row"><div class="catname">Content Quality<span class="weight">weight 23%</span></div><div class="bartrack"><div class="barfill" style="width:45%; background:var(--critical);"></div></div><div class="barnum">45</div></div>
+      <div class="cat-row"><div class="catname">On-Page SEO<span class="weight">weight 20%</span></div><div class="bartrack"><div class="barfill" style="width:35%; background:var(--critical);"></div></div><div class="barnum">35</div></div>
+      <div class="cat-row"><div class="catname">Schema<span class="weight">weight 10%</span></div><div class="bartrack"><div class="barfill" style="width:50%; background:var(--warning);"></div></div><div class="barnum">50</div></div>
+      <div class="cat-row"><div class="catname">Performance<span class="weight">weight 10%</span></div><div class="bartrack"><div class="barfill" style="width:55%; background:var(--warning);"></div></div><div class="barnum">55</div></div>
+      <div class="cat-row"><div class="catname">AI Search Readiness<span class="weight">weight 10%</span></div><div class="bartrack"><div class="barfill" style="width:40%; background:var(--critical);"></div></div><div class="barnum">40</div></div>
+      <div class="cat-row"><div class="catname">Images<span class="weight">weight 5%</span></div><div class="bartrack"><div class="barfill" style="width:55%; background:var(--warning);"></div></div><div class="barnum">55</div></div>
+    </div>
+  </section>
+
+  <section id="technical">
+    <div class="section-head"><h2>Technical SEO</h2><span class="score-tag mono">50 / 100</span></div>
+    <div class="works-box">
+      <span class="label">What works</span>
+      <ul>
+        <li>robots.txt is valid, allows all crawling, and correctly references the sitemap</li>
+        <li>sitemap.xml is valid, lists all 40 URLs with correct per-URL hreflang alternates (en/ar/x-default)</li>
+        <li>HTTPS enforced; http:// 301-redirects to https://</li>
+        <li>Fast TTFB (~337ms) and Brotli compression at the edge (Hostinger hcdn)</li>
+        <li>Canonical tag correctly self-references the non-www host even when loaded via www</li>
+      </ul>
+    </div>
+
+    <div class="finding">
+      <div class="finding-head"><span class="sev sev-critical">Critical</span><h3>Soft-404s: invalid URLs return HTTP 200 with homepage content</h3></div>
+      <p>Requesting a nonexistent path returns HTTP 200 and renders the full homepage — the SPA router falls back to home instead of a not-found route. No noindex or 404 status is sent.</p>
+      <div class="evidence"><span class="ev-label">curl -s -o /dev/null -w "%{http_code}" https://skldeg.com/this-page-does-not-exist-xyz123</span><code>200   ← rendered content = full homepage, no 404, no noindex</code></div>
+      <div class="fix"><b>Fix →</b> Render a real "not found" view for unmatched routes and return HTTP 404 (or 410) at the server. Add noindex on that view as a backstop.</div>
+    </div>
+
+    <div class="finding">
+      <div class="finding-head"><span class="sev sev-high">High</span><h3>www and non-www both serve 200 without a redirect</h3></div>
+      <p>www.skldeg.com returns 200 OK directly instead of 301-redirecting to the non-www host. The canonical tag correctly points to skldeg.com, but this relies on every crawler and social platform respecting rel=canonical rather than one URL being enforced by the server.</p>
+      <div class="evidence"><span class="ev-label">curl -sI https://www.skldeg.com/</span><code>HTTP/1.1 200 OK   ← no Location header, no redirect</code></div>
+      <div class="fix"><b>Fix →</b> Add a 301 redirect from www to the canonical non-www host (or the reverse) at the hosting/CDN layer.</div>
+    </div>
+
+    <div class="finding">
+      <div class="finding-head"><span class="sev sev-high">High</span><h3>Missing standard security headers</h3></div>
+      <p>The only security-relevant header present is a bare CSP directive. Strict-Transport-Security, X-Content-Type-Options, X-Frame-Options, Referrer-Policy and Permissions-Policy are all absent.</p>
+      <div class="evidence"><span class="ev-label">curl -sI https://skldeg.com/</span><code>content-security-policy: upgrade-insecure-requests
+Server: hcdn
+← no HSTS · no X-Content-Type-Options · no X-Frame-Options · no Referrer-Policy</code></div>
+      <div class="fix"><b>Fix →</b> Add HSTS, X-Content-Type-Options: nosniff, frame-ancestors 'self', and Referrer-Policy at the CDN/hosting layer.</div>
+    </div>
+
+    <div class="finding">
+      <div class="finding-head"><span class="sev sev-critical">Critical</span><h3>All per-page metadata depends on client-side JavaScript</h3></div>
+      <p>The raw HTTP response for every route tested — including individual blog posts — is an identical ~2.6KB app shell with the generic fallback title and no description tag at all. Unique per-page values only appear once a headless browser executes the JS.</p>
+      <div class="evidence"><span class="ev-label">curl -s https://skldeg.com/blog/top-seo-agency-dubai | wc -c</span><code>2655 bytes   ← raw HTML is the generic app shell, not the article</code></div>
+      <div class="fix"><b>Fix →</b> Move to server-side rendering or prerendering for at least the &lt;head&gt; metadata, so title/description/canonical/OG tags exist in the initial HTML for every route.</div>
+    </div>
+  </section>
+
+  <section id="content">
+    <div class="section-head"><h2>Content Quality</h2><span class="score-tag mono">45 / 100</span></div>
+    <div class="works-box">
+      <span class="label">What works</span>
+      <ul>
+        <li>Substantial body copy where checked — 373 to 1,659 words per page, not thin content</li>
+        <li>Blog articles carry complete, valid Article schema: headline, author, dates, publisher, image</li>
+        <li>Full bilingual EN/AR coverage with correct lang="ar" dir="rtl" on Arabic pages</li>
+      </ul>
+    </div>
+
+    <div class="finding">
+      <div class="finding-head"><span class="sev sev-critical">Critical</span><h3>Meta description renders as the literal text "undefined"</h3></div>
+      <p>Confirmed on 4 of 4 blog posts checked. This is what appears as the snippet in Google search results and in Facebook / LinkedIn / WhatsApp / Twitter link previews for every article.</p>
+      <div class="evidence"><span class="ev-label">grep meta[name=description] — /blog/top-seo-agency-dubai</span><code>&lt;meta name="description" content="undefined"&gt;
+&lt;meta property="og:description" content="undefined"&gt;
+&lt;meta name="twitter:description" content="undefined"&gt;</code></div>
+      <div class="fix"><b>Fix →</b> Trace the template variable binding — the post's description field is being read before it's populated, or the wrong field name is referenced. Re-check all published posts once fixed.</div>
+    </div>
+
+    <div class="finding">
+      <div class="finding-head"><span class="sev sev-high">High</span><h3>Content/URL language mismatch on /ecommerce</h3></div>
+      <p>/ecommerce is hreflang-tagged as the English variant (Arabic counterpart at /ar/نمو-المتاجر), yet its own H1 and full body copy are written entirely in Arabic.</p>
+      <div class="evidence"><span class="ev-label">parsed h1 — https://skldeg.com/ecommerce (hreflang="en")</span><code>"زوار بالآلاف وما فيمبيعات؟ متجرك لا يحتاج مجرد وكالة تسويق... بل يحتاج شريك استراتيجي"</code></div>
+      <div class="fix"><b>Fix →</b> Serve genuine English content on /ecommerce to match its hreflang="en" designation, or correct the hreflang/URL mapping.</div>
+    </div>
+
+    <div class="finding">
+      <div class="finding-head"><span class="sev sev-low">Low</span><h3>Possible slug / topic mismatch on a blog post</h3></div>
+      <p>/blog/social-media-trends-2025 renders with the H1 "What Is Content Creation in Digital Marketing in Egypt?" rather than a social-media-trends topic implied by its slug.</p>
+      <div class="fix"><b>Fix →</b> Verify the slug matches the intended topic; correct if unintentional.</div>
+    </div>
+  </section>
+
+  <section id="onpage">
+    <div class="section-head"><h2>On-Page SEO</h2><span class="score-tag mono">35 / 100</span></div>
+    <div class="works-box">
+      <span class="label">What works</span>
+      <ul>
+        <li>Every page has exactly one H1 and a proper viewport meta tag</li>
+        <li>Individual blog posts get a unique, keyword-relevant &lt;title&gt; (e.g. "Top SEO Agency Dubai: Best Picks for 2026")</li>
+      </ul>
+    </div>
+
+    <div class="finding">
+      <div class="finding-head"><span class="sev sev-critical">Critical</span><h3>Duplicate title + description across nearly every core page</h3></div>
+      <p>Home, About, Services, Contact, Ecommerce, Blog index, and both Case Studies tested (Seagate, Decorious) all render the identical title and description below.</p>
+      <div class="evidence"><span class="ev-label">&lt;title&gt; found on 7+ distinct URLs</span><code>SKLD — Reshaping Digital Space
+"SKLD is a premium digital marketing and creative agency. We build digital
+ experiences that move brands forward."</code></div>
+      <div class="fix"><b>Fix →</b> Write a unique title + description per template: Home, About, Services, Contact, Ecommerce, Blog index, and each Case Study.</div>
+    </div>
+
+    <div class="finding">
+      <div class="finding-head"><span class="sev sev-high">High</span><h3>og:title stuck on the homepage value</h3></div>
+      <p>og:title returns "SKLD — Reshaping Digital Space" on Home, About, Services, Contact, Ecommerce, Blog index and Case Studies — the duplication extends to social share previews.</p>
+      <div class="fix"><b>Fix →</b> Bind og:title to each page's own unique title alongside the title-tag fix above.</div>
+    </div>
+
+    <div class="finding">
+      <div class="finding-head"><span class="sev sev-medium">Medium</span><h3>No Twitter Card markup on non-blog pages</h3></div>
+      <p>twitter:card tags are entirely absent on Home, About, Services, Contact, Ecommerce, Blog index and Case Studies — only blog posts include them, and those are broken by the "undefined" bug above.</p>
+      <div class="fix"><b>Fix →</b> Add twitter:card / title / description / image to every page template.</div>
+    </div>
+  </section>
+
+  <section id="schema">
+    <div class="section-head"><h2>Schema &amp; Structured Data</h2><span class="score-tag mono">50 / 100</span></div>
+    <div class="works-box">
+      <span class="label">What works</span>
+      <ul>
+        <li>Valid Organization schema (name, url, logo) present sitewide</li>
+        <li>Blog posts carry complete Article schema — headline, image, dates, author, publisher, mainEntityOfPage</li>
+      </ul>
+    </div>
+
+    <div class="finding">
+      <div class="finding-head"><span class="sev sev-medium">Medium</span><h3>Organization schema is minimal and missing local/contact signals</h3></div>
+      <p>Only name, url and logo are present — no sameAs (social profiles), no address, telephone or ContactPoint, and no LocalBusiness/ProfessionalService typing despite SKLD serving a specific Egypt/UAE market.</p>
+      <div class="evidence"><span class="ev-label">Organization schema — every page</span><code>{ "@type": "Organization", "name": "SKLD", "url": "https://skldeg.com/", "logo": "..." }</code></div>
+      <div class="fix"><b>Fix →</b> Add sameAs social links, a ContactPoint, and address/LocalBusiness data.</div>
+    </div>
+
+    <div class="finding">
+      <div class="finding-head"><span class="sev sev-medium">Medium</span><h3>No BreadcrumbList, Service, or FAQPage schema</h3></div>
+      <p>Services, Case Studies and Blog pages have a clear hierarchy (Home &gt; Services, Home &gt; Case Studies &gt; Client, Home &gt; Blog &gt; Post) but no BreadcrumbList schema was found anywhere, and no Service schema exists on the Services page.</p>
+      <div class="fix"><b>Fix →</b> Add BreadcrumbList to hierarchical templates and Service entries per offering on the Services page.</div>
+    </div>
+  </section>
+
+  <section id="performance">
+    <div class="section-head"><h2>Performance (Core Web Vitals)</h2><span class="score-tag mono">55 / 100</span></div>
+    <div class="works-box">
+      <span class="label">What works</span>
+      <ul>
+        <li>Fast server response: TTFB ~337ms on the homepage</li>
+        <li>Brotli compression enabled at the CDN edge</li>
+        <li>93% of homepage images (63/68) already use modern WebP/AVIF formats</li>
+      </ul>
+    </div>
+
+    <div class="finding">
+      <div class="finding-head"><span class="sev sev-info">Info</span><h3>PageSpeed Insights / CrUX field data unavailable this run</h3></div>
+      <p>The shared PSI API quota returned a rate-limit error for both mobile and desktop strategies, so lab Lighthouse scores and CrUX field metrics (LCP / INP / CLS) could not be captured in this session.</p>
+      <div class="evidence"><span class="ev-label">PageSpeed Insights API response</span><code>"error": "PSI rate limit exceeded (240 QPM / 25,000 QPD). Wait and retry."</code></div>
+      <div class="fix"><b>Fix →</b> Re-run PageSpeed Insights with a dedicated API key, or check pagespeed.web.dev directly, for real LCP/INP/CLS numbers.</div>
+    </div>
+
+    <div class="finding">
+      <div class="finding-head"><span class="sev sev-medium">Medium</span><h3>No explicit image dimensions; minimal lazy loading</h3></div>
+      <p>None of the 68 homepage images have explicit width/height attributes, and only 3 use native lazy loading — the remaining 65 load eagerly regardless of scroll position, including a full row of below-the-fold client-logo images.</p>
+      <div class="evidence"><span class="ev-label">homepage image audit</span><code>68 images total · 0 with width/height · 3 with loading="lazy" · 65 eager</code></div>
+      <div class="fix"><b>Fix →</b> Add explicit width/height (or aspect-ratio) to prevent layout shift, and loading="lazy" on anything below the initial viewport.</div>
+    </div>
+  </section>
+
+  <section id="ai">
+    <div class="section-head"><h2>AI Search Readiness</h2><span class="score-tag mono">40 / 100</span></div>
+    <div class="works-box">
+      <span class="label">What works</span>
+      <ul>
+        <li>Substantial blog content (1,000+ words) gives AI answer engines real passages to cite</li>
+        <li>Article schema's named author is a concrete E-E-A-T signal</li>
+      </ul>
+    </div>
+
+    <div class="finding">
+      <div class="finding-head"><span class="sev sev-high">High</span><h3>Broken and duplicated descriptions undermine AI-citation summaries</h3></div>
+      <p>AI answer engines (Google AI Overviews, Perplexity, ChatGPT search) commonly draw on the title/description pair as a first-pass summary. With that field duplicated across pages or literally "undefined," every page sends the same or a broken summary signal.</p>
+      <div class="fix"><b>Fix →</b> Resolving the Critical title/description bugs above is the single highest-leverage AI-readiness fix.</div>
+    </div>
+
+    <div class="finding">
+      <div class="finding-head"><span class="sev sev-medium">Medium</span><h3>No llms.txt; content requires JS to appear</h3></div>
+      <p>No llms.txt file was found, and because meaningful content only appears after JavaScript executes, any AI crawler that doesn't fully render JS sees only the generic app shell.</p>
+      <div class="fix"><b>Fix →</b> SSR/prerendering (already recommended under Technical SEO) is the structural fix; an llms.txt is a smaller optional addition.</div>
+    </div>
+  </section>
+
+  <section id="images">
+    <div class="section-head"><h2>Images</h2><span class="score-tag mono">55 / 100</span></div>
+    <div class="works-box">
+      <span class="label">What works</span>
+      <ul>
+        <li>Modern formats (WebP/AVIF) used for the large majority of images sitewide</li>
+        <li>Contact and About pages keep image counts low, with full alt-text coverage</li>
+      </ul>
+    </div>
+
+    <div class="finding">
+      <div class="finding-head"><span class="sev sev-medium">Medium</span><h3>Missing alt text on a meaningful share of images</h3></div>
+      <p>Alt-text coverage varies sharply by page — worst on case studies.</p>
+      <div class="evidence"><span class="ev-label">missing alt / total images, by page</span><code>Homepage:        8 / 68  (12%)
+Services:        4 / 15  (27%)
+Seagate case study: 13 / 21  (62%)</code></div>
+      <div class="fix"><b>Fix →</b> Add descriptive alt text sitewide, starting with case-study pages where the gap is largest; decorative images can use alt="".</div>
+    </div>
+  </section>
+
+  <section id="screenshots">
+    <div class="section-head"><h2>Screenshots</h2></div>
+    <p class="muted" style="margin-bottom:16px;">No visual defects found in this pass — the mobile above-the-fold view is clean: clear headline, visible CTA, and an accessible EN/AR language switcher.</p>
+    <div class="shot-grid">
+      <figure class="shot">
+        <img src="screenshots/desktop.png" alt="SKLD homepage, desktop viewport" loading="lazy">
+        <figcaption>Desktop — homepage</figcaption>
+      </figure>
+      <figure class="shot mobile">
+        <img src="screenshots/mobile.png" alt="SKLD homepage, mobile viewport" loading="lazy">
+        <figcaption>Mobile — homepage</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section id="plan">
+    <div class="section-head"><h2>Action plan</h2></div>
+    <div class="phase-grid" id="phaseGrid">
+      <div class="phase">
+        <div><div class="phase-title">Phase 1 — Critical</div><div class="phase-time">Week 1</div></div>
+        <ul>
+          <li><input type="checkbox" id="p1-1"><span>Fix the "undefined" meta-description bug on blog posts</span></li>
+          <li><input type="checkbox" id="p1-2"><span>Write unique title + description for the 7 core templates</span></li>
+          <li><input type="checkbox" id="p1-3"><span>Return real HTTP 404s for unmatched routes</span></li>
+          <li><input type="checkbox" id="p1-4"><span>Fix the /ecommerce hreflang/language mismatch</span></li>
+        </ul>
+      </div>
+      <div class="phase">
+        <div><div class="phase-title">Phase 2 — High-impact</div><div class="phase-time">Weeks 2–3</div></div>
+        <ul>
+          <li><input type="checkbox" id="p2-1"><span>301-redirect www ↔ non-www at the host level</span></li>
+          <li><input type="checkbox" id="p2-2"><span>Add HSTS, X-Content-Type-Options, X-Frame-Options, Referrer-Policy</span></li>
+          <li><input type="checkbox" id="p2-3"><span>Fix og:title on non-blog pages</span></li>
+          <li><input type="checkbox" id="p2-4"><span>Add Twitter Card tags to every template</span></li>
+          <li><input type="checkbox" id="p2-5"><span>Lazy-load + size the 65 eager homepage images</span></li>
+        </ul>
+      </div>
+      <div class="phase">
+        <div><div class="phase-title">Phase 3 — Content &amp; authority</div><div class="phase-time">Month 2</div></div>
+        <ul>
+          <li><input type="checkbox" id="p3-1"><span>Move &lt;head&gt; metadata to SSR / prerendering</span></li>
+          <li><input type="checkbox" id="p3-2"><span>Extend Organization schema (sameAs, ContactPoint, address)</span></li>
+          <li><input type="checkbox" id="p3-3"><span>Add BreadcrumbList + Service schema</span></li>
+          <li><input type="checkbox" id="p3-4"><span>Fill in missing alt text, starting with case studies</span></li>
+          <li><input type="checkbox" id="p3-5"><span>Verify the social-media-trends-2025 slug/content match</span></li>
+        </ul>
+      </div>
+      <div class="phase">
+        <div><div class="phase-title">Phase 4 — Monitoring</div><div class="phase-time">Ongoing</div></div>
+        <ul>
+          <li><input type="checkbox" id="p4-1"><span>Re-run PageSpeed Insights for real LCP/INP/CLS</span></li>
+          <li><input type="checkbox" id="p4-2"><span>Set up Search Console to catch soft-404s / duplicates</span></li>
+          <li><input type="checkbox" id="p4-3"><span>Re-check unique titles/descriptions after each template edit</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>Crawled: sitemap (40 URLs) · rendered + parsed 12 pages · headers/redirects checked live</span>
+    <span>PSI/CrUX not captured this run — quota rate-limited</span>
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  try{
+    var boxes = document.querySelectorAll('.phase input[type="checkbox"]');
+    boxes.forEach(function(b){
+      var key = 'skld-audit-' + b.id;
+      try{
+        if (localStorage.getItem(key) === '1'){ b.checked = true; b.closest('li').classList.add('checked'); }
+      }catch(e){}
+      b.addEventListener('change', function(){
+        b.closest('li').classList.toggle('checked', b.checked);
+        try{ localStorage.setItem(key, b.checked ? '1' : '0'); }catch(e){}
+      });
+    });
+  }catch(e){}
+})();
+</script>
+</body>
+</html>
